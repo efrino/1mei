@@ -11,6 +11,9 @@
             background-color: #f0f0f0;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         header {
             background-color: #333;
@@ -44,6 +47,7 @@
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
         }
         .member {
             display: flex;
@@ -79,9 +83,6 @@
             color: #fff;
             padding: 20px 0;
             text-align: center;
-            width: 100%; /* Make footer full width */
-            position: fixed; /* Stick footer to bottom */
-            bottom: 0; /* Stick footer to bottom */
         }
     </style>
 </head>
@@ -121,7 +122,8 @@
                     <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
-        </div><div class="member">
+        </div>
+        <div class="member">
             <img src="person.png" alt="Foto Anda">
             <div class="member-info">
                 <h2>Susilo Bambang Yudhoyono</h2>

@@ -46,54 +46,33 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        #game {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 50px;
-        }
-        .icon {
-            width: 200px;
-            margin-bottom: 20px;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            transition: border-color 0.3s ease;
-        }
-        .icon img {
-            width: 100%;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .icon span {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        .icon:hover {
-            border-color: #333;
-        }
-        #result {
-            font-size: 1.5em;
+        #leaderboard {
             margin-top: 20px;
-            display: none; /* Hide pop-up by default */
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-            animation: fadeInOut 0.5s ease; /* Add fade-in/out animation */
         }
-        @keyframes fadeInOut {
-            0% { opacity: 0; }
-            25% { opacity: 1; }
-            75% { opacity: 1; }
-            100% { opacity: 0; }
+        #leaderboard h2 {
+            margin-bottom: 10px;
         }
-    
+        #leaderboardList {
+            padding-left: 0;
+        }
+        #leaderboardList li {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+        .start-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .start-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -109,59 +88,39 @@
         </ul>
     </nav>
     <div class="container">
-        <div id="game">
-            <div class="icon batu" onclick="play('batu')">
-                <img src="fist.png" alt="Batu">
-                <span>Batu</span>
-            </div>
-            <div class="icon kertas" onclick="play('kertas')">
-                <img src="hand-paper.png" alt="Kertas">
-                <span>Kertas</span>
-            </div>
-            <div class="icon gunting" onclick="play('gunting')">
-                <img src="scissors.png" alt="Gunting">
-                <span>Gunting</span>
-            </div>
+        <!-- Leaderboard -->
+        <div id="leaderboard">
+            <h2>Papan Skor Tertinggi</h2>
+            <ol id="leaderboardList">
+                <!-- Leaderboard list will be populated here -->
+            </ol>
         </div>
-        <div id="result"></div>
+        <!-- Button to start playing -->
+        <button class="start-button" onclick="startGame()">Mulai Bermain</button>
     </div>
 
     <script>
-        function play(playerChoice) {
-            const choices = ['batu', 'kertas', 'gunting'];
-            const computerChoice = choices[Math.floor(Math.random() * 3)];
-            const playerImg = document.querySelector(`.${playerChoice} img`);
-            const computerImg = document.querySelector(`.${computerChoice} img`);
-            const resultDiv = document.getElementById('result');
-
-            // Reset transformasi gambar
-            const allImgs = document.querySelectorAll('.icon img');
-            allImgs.forEach(img => img.style.transform = 'none');
-
-            // Atur transformasi gambar berdasarkan pilihan pemain dan komputer
-            playerImg.style.transform = 'scale(1.1)';
-            computerImg.style.transform = 'scale(1.1)';
-
-            // Tentukan pemenang
-            let result;
-            if (playerChoice === computerChoice) {
-                result = 'Seri!';
-            } else if ((playerChoice === 'batu' && computerChoice === 'gunting') ||
-                       (playerChoice === 'gunting' && computerChoice === 'kertas') ||
-                       (playerChoice === 'kertas' && computerChoice === 'batu')) {
-                result = 'Kamu Menang!';
-            } else {
-                result = 'Komputer Menang!';
-            }
-
-            // Tampilkan hasil dengan efek responsif dan animatif
-            resultDiv.textContent = `Hasil: ${result}`;
-            resultDiv.style.display = 'block';
-            setTimeout(() => {
-                resultDiv.style.display = 'none';
-            }, 2000); // Hide the result after 2 seconds
+        function startGame() {
+            // Redirect to the game page
+            window.location.href = 'game.html';
         }
+
+        // Fetch leaderboard data from results.json
+        fetch('results.json')
+            .then(response => response.json())
+            .then(data => {
+                const leaderboardList = document.getElementById('leaderboardList');
+                // Sorting data based on score in descending order
+                data.sort((a, b) => b.score - a.score);
+                // Displaying the top 10 scores
+                const top10 = data.slice(0, 10);
+                top10.forEach((player, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<span>${index + 1}.</span> ${player.username} - ${player.score} poin <span class="timestamp">(${player.timestamp})</span>`;
+                    leaderboardList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error:', error));
     </script>
-    
 </body>
 </html>
